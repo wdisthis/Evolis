@@ -55,31 +55,32 @@ The simulation is built upon these fundamental rules:
 - **Matplotlib:** (Planned) Population statistics and chart generation.
 - **JSON:** Storing and loading simulation configurations.
 
-## Installation
+## Installation & Usage (Quick Start)
 
 1. Ensure you have Python 3.8+ installed on your system.
-2. Clone this repository:
+2. Clone this repository and navigate to the project folder:
    ```bash
    git clone https://github.com/yourusername/evolis.git
    cd evolis
    ```
-3. Create a virtual environment (recommended):
+3. Create and activate a virtual environment (optional but recommended):
    ```bash
+   # On Windows:
    python -m venv .venv
-   source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
+   .venv\Scripts\activate
+   
+   # On Mac/Linux:
+   python3 -m venv .venv
+   source .venv/bin/activate
    ```
 4. Install the required dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-
-## Usage
-
-To start the simulation, run the main script from the root directory:
-
-```bash
-python evolis/main.py
-```
+5. **Run the simulation** from the root directory:
+   ```bash
+   python evolis/main.py
+   ```
 
 *(Note: The project is currently in the MVP phase. Command line arguments and interactive UI controls will be documented here as they are implemented.)*
 

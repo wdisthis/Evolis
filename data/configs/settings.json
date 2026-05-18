@@ -1,0 +1,14 @@
+{
+  "window": {
+    "width": 800,
+    "height": 600,
+    "title": "Evolis Simulation",
+    "fps": 60
+  },
+  "colors": {
+    "background": [30, 30, 30],
+    "food": [100, 255, 100],
+    "prey": [100, 150, 255],
+    "predator": [255, 100, 100]
+  }
+}
