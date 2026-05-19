@@ -20,3 +20,5 @@ ENV/
 rencana.md
 data/saves/*
 !data/saves/.gitkeep
+
+implementation_plan.md

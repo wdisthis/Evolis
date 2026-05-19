@@ -36,9 +36,10 @@ class Renderer:
         for food in self.world.foods:
             pygame.draw.circle(self.screen, (0, 255, 0), (int(food.x), int(food.y)), 3)
             
-        # Draw organisms (blue circles)
+        # Draw organisms (color based on energy, size based on dna)
         for org in self.world.organisms:
-            pygame.draw.circle(self.screen, (0, 0, 255), (int(org.x), int(org.y)), 5)
+            color = (max(0, 255 - int(org.energy)), min(255, int(org.energy)), 255)
+            pygame.draw.circle(self.screen, color, (int(org.x), int(org.y)), max(2, int(org.dna.size)))
         
         # Update display
         pygame.display.flip()

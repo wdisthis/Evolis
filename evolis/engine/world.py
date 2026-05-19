@@ -3,6 +3,9 @@ import os
 import random
 from evolis.entities.food import Food
 from evolis.entities.organism import Organism
+from evolis.systems.movement import MovementSystem
+from evolis.systems.collision import CollisionSystem
+from evolis.systems.reproduction import ReproductionSystem
 
 class World:
     def __init__(self):
@@ -11,6 +14,10 @@ class World:
         self.organisms = []
         self.foods = []
         self.tick = 0
+        
+        self.movement_system = MovementSystem()
+        self.collision_system = CollisionSystem()
+        self.reproduction_system = ReproductionSystem()
         
         self.load_settings()
         self.spawn_initial_entities()
@@ -40,11 +47,16 @@ class World:
             self.organisms.append(org)
 
     def update(self):
-        for org in self.organisms:
-            org.update()
-            
-            # Keep organisms within bounds by bouncing them
-            if org.x < 0 or org.x > self.width: org.vx *= -1
-            if org.y < 0 or org.y > self.height: org.vy *= -1
+        # Run systems
+        self.movement_system.update(self.organisms, self.foods, self.width, self.height)
+        self.collision_system.update(self.organisms, self.foods)
+        self.reproduction_system.update(self)
+        
+        # Remove dead organisms
+        self.organisms = [org for org in self.organisms if not org.is_dead]
+        
+        # Spawn some food periodically
+        if self.tick % 10 == 0 and len(self.foods) < 100:
+            self.foods.append(Food(random.uniform(0, self.width), random.uniform(0, self.height)))
             
         self.tick += 1
