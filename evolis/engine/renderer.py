@@ -32,7 +32,13 @@ class Renderer:
         # Clear screen with background color
         self.screen.fill(self.bg_color)
         
-        # Draw entities here later...
+        # Draw foods (green circles)
+        for food in self.world.foods:
+            pygame.draw.circle(self.screen, (0, 255, 0), (int(food.x), int(food.y)), 3)
+            
+        # Draw organisms (blue circles)
+        for org in self.world.organisms:
+            pygame.draw.circle(self.screen, (0, 0, 255), (int(org.x), int(org.y)), 5)
         
         # Update display
         pygame.display.flip()

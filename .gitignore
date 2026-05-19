@@ -18,6 +18,5 @@ ENV/
 
 # Evolis specific
 rencana.md
-implementation-plan.md
 data/saves/*
 !data/saves/.gitkeep
