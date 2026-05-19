@@ -14,6 +14,7 @@ class World:
         self.organisms = []
         self.foods = []
         self.tick = 0
+        self.event_log = []
         
         self.movement_system = MovementSystem()
         self.collision_system = CollisionSystem()
@@ -46,13 +47,22 @@ class World:
             org.vy = random.uniform(-1, 1)
             self.organisms.append(org)
 
+    def log_event(self, message):
+        self.event_log.append(message)
+        if len(self.event_log) > 50:
+            self.event_log.pop(0)
+
     def update(self):
         # Run systems
         self.movement_system.update(self.organisms, self.foods, self.width, self.height)
         self.collision_system.update(self.organisms, self.foods)
         self.reproduction_system.update(self)
         
-        # Remove dead organisms
+        # Remove dead organisms and log deaths
+        for org in self.organisms:
+            if org.is_dead:
+                self.log_event(f"Tick {self.tick}: Organism {org.id} died (Age: {org.age})")
+                
         self.organisms = [org for org in self.organisms if not org.is_dead]
         
         # Spawn some food periodically

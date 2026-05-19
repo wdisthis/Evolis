@@ -9,9 +9,11 @@ class Renderer:
         
         self.load_settings()
         
-        self.screen = pygame.display.set_mode((self.world.width, self.world.height))
+        self.sidebar_width = 320
+        self.screen = pygame.display.set_mode((self.world.width + self.sidebar_width, self.world.height))
         pygame.display.set_caption(self.title)
         self.clock = pygame.time.Clock()
+        self.font = pygame.font.SysFont("Consolas", 12)
 
     def load_settings(self):
         self.title = "Evolis Simulation"
@@ -42,6 +44,42 @@ class Renderer:
             g = max(0, min(255, int(org.energy)))
             color = (r, g, 255)
             pygame.draw.circle(self.screen, color, (int(org.x), int(org.y)), max(2, int(org.dna.size)))
+            
+        # Draw Sidebar
+        sidebar_rect = pygame.Rect(self.world.width, 0, self.sidebar_width, self.world.height)
+        pygame.draw.rect(self.screen, (40, 40, 40), sidebar_rect)
+        pygame.draw.line(self.screen, (100, 100, 100), (self.world.width, 0), (self.world.width, self.world.height), 2)
+        
+        y_offset = 10
+        title_surf = self.font.render("--- Event Log ---", True, (200, 200, 200))
+        self.screen.blit(title_surf, (self.world.width + 10, y_offset))
+        y_offset += 25
+        
+        all_lines = []
+        max_text_width = self.sidebar_width - 20
+        for log in self.world.event_log:
+            words = log.split(' ')
+            current_line = []
+            for word in words:
+                test_line = ' '.join(current_line + [word])
+                width, _ = self.font.size(test_line)
+                if width <= max_text_width:
+                    current_line.append(word)
+                else:
+                    if not current_line:
+                        all_lines.append(word)
+                        current_line = []
+                    else:
+                        all_lines.append(' '.join(current_line))
+                        current_line = [word]
+            if current_line:
+                all_lines.append(' '.join(current_line))
+                
+        max_lines = (self.world.height - y_offset - 10) // 18
+        for line in all_lines[-max_lines:]:
+            log_surf = self.font.render(line, True, (180, 180, 180))
+            self.screen.blit(log_surf, (self.world.width + 10, y_offset))
+            y_offset += 18
         
         # Update display
         pygame.display.flip()

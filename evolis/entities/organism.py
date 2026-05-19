@@ -1,7 +1,9 @@
+import uuid
 from evolis.engine.genetics import DNA
 
 class Organism:
     def __init__(self, x, y, energy=100.0, dna=None):
+        self.id = str(uuid.uuid4())[:8]
         self.x = x
         self.y = y
         self.vx = 0.0
