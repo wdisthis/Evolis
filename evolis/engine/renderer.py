@@ -38,12 +38,9 @@ class Renderer:
         for food in self.world.foods:
             pygame.draw.circle(self.screen, (0, 255, 0), (int(food.x), int(food.y)), 3)
             
-        # Draw organisms (color based on energy, size based on dna)
+        # Draw organisms (color based on lineage/dna, size based on dna)
         for org in self.world.organisms:
-            r = max(0, min(255, 255 - int(org.energy)))
-            g = max(0, min(255, int(org.energy)))
-            color = (r, g, 255)
-            pygame.draw.circle(self.screen, color, (int(org.x), int(org.y)), max(2, int(org.dna.size)))
+            pygame.draw.circle(self.screen, org.dna.color, (int(org.x), int(org.y)), max(2, int(org.dna.size)))
             
         # Draw Sidebar
         sidebar_rect = pygame.Rect(self.world.width, 0, self.sidebar_width, self.world.height)
@@ -58,6 +55,12 @@ class Renderer:
         all_lines = []
         max_text_width = self.sidebar_width - 20
         for log in self.world.event_log:
+            color = (180, 180, 180)
+            if "died" in log:
+                color = (255, 100, 100)
+            elif "reproduced" in log:
+                color = (100, 255, 100)
+                
             words = log.split(' ')
             current_line = []
             for word in words:
@@ -67,17 +70,17 @@ class Renderer:
                     current_line.append(word)
                 else:
                     if not current_line:
-                        all_lines.append(word)
+                        all_lines.append((word, color))
                         current_line = []
                     else:
-                        all_lines.append(' '.join(current_line))
+                        all_lines.append((' '.join(current_line), color))
                         current_line = [word]
             if current_line:
-                all_lines.append(' '.join(current_line))
+                all_lines.append((' '.join(current_line), color))
                 
         max_lines = (self.world.height - y_offset - 10) // 18
-        for line in all_lines[-max_lines:]:
-            log_surf = self.font.render(line, True, (180, 180, 180))
+        for line, color in all_lines[-max_lines:]:
+            log_surf = self.font.render(line, True, color)
             self.screen.blit(log_surf, (self.world.width + 10, y_offset))
             y_offset += 18
         
