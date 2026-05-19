@@ -14,6 +14,7 @@ class Renderer:
         pygame.display.set_caption(self.title)
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("Consolas", 12)
+        self.font_bold = pygame.font.SysFont("Consolas", 12, bold=True)
 
     def load_settings(self):
         self.title = "Evolis Simulation"
@@ -54,34 +55,55 @@ class Renderer:
         
         all_lines = []
         max_text_width = self.sidebar_width - 20
-        for log in self.world.event_log:
-            color = (180, 180, 180)
-            if "died" in log:
-                color = (255, 100, 100)
-            elif "reproduced" in log:
-                color = (100, 255, 100)
+        for log_data in self.world.event_log:
+            if isinstance(log_data, tuple):
+                log_msg, base_color = log_data
+            else:
+                log_msg, base_color = log_data, (180, 180, 180)
                 
-            words = log.split(' ')
-            current_line = []
+            words = log_msg.split(' ')
+            word_objects = []
             for word in words:
-                test_line = ' '.join(current_line + [word])
-                width, _ = self.font.size(test_line)
-                if width <= max_text_width:
-                    current_line.append(word)
+                color = base_color
+                is_bold = False
+                if "died" in word:
+                    color = (255, 100, 100)
+                    is_bold = True
+                elif "reproduced" in word:
+                    color = (100, 255, 100)
+                    is_bold = True
+                    
+                word_objects.append((word, color, is_bold))
+                
+            current_line = []
+            current_width = 0
+            for word_obj in word_objects:
+                font = self.font_bold if word_obj[2] else self.font
+                word_width, _ = font.size(word_obj[0] + " ")
+                
+                if current_width + word_width <= max_text_width:
+                    current_line.append(word_obj)
+                    current_width += word_width
                 else:
                     if not current_line:
-                        all_lines.append((word, color))
+                        all_lines.append([word_obj])
                         current_line = []
+                        current_width = 0
                     else:
-                        all_lines.append((' '.join(current_line), color))
-                        current_line = [word]
+                        all_lines.append(current_line)
+                        current_line = [word_obj]
+                        current_width = word_width
             if current_line:
-                all_lines.append((' '.join(current_line), color))
+                all_lines.append(current_line)
                 
         max_lines = (self.world.height - y_offset - 10) // 18
-        for line, color in all_lines[-max_lines:]:
-            log_surf = self.font.render(line, True, color)
-            self.screen.blit(log_surf, (self.world.width + 10, y_offset))
+        for line in all_lines[-max_lines:]:
+            x_cursor = self.world.width + 10
+            for word, color, is_bold in line:
+                font = self.font_bold if is_bold else self.font
+                word_surf = font.render(word + " ", True, color)
+                self.screen.blit(word_surf, (x_cursor, y_offset))
+                x_cursor += word_surf.get_width()
             y_offset += 18
         
         # Update display

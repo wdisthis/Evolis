@@ -47,8 +47,8 @@ class World:
             org.vy = random.uniform(-1, 1)
             self.organisms.append(org)
 
-    def log_event(self, message):
-        self.event_log.append(message)
+    def log_event(self, message, color=(180, 180, 180)):
+        self.event_log.append((message, color))
         if len(self.event_log) > 50:
             self.event_log.pop(0)
 
@@ -61,7 +61,7 @@ class World:
         # Remove dead organisms and log deaths
         for org in self.organisms:
             if org.is_dead:
-                self.log_event(f"Tick {self.tick}: Organism {org.id} died (Age: {org.age})")
+                self.log_event(f"Tick {self.tick}: Organism {org.id} died (Age: {org.age})", org.dna.color)
                 
         self.organisms = [org for org in self.organisms if not org.is_dead]
         

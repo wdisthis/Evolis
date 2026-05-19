@@ -17,6 +17,6 @@ class ReproductionSystem:
                                  org.y + random.uniform(-10, 10), 
                                  energy=60, dna=child_dna)
                 new_organisms.append(child)
-                world.log_event(f"Tick {world.tick}: Organism {org.id} reproduced! Offspring: {child.id}")
+                world.log_event(f"Tick {world.tick}: Organism {org.id} reproduced! Offspring: {child.id}", org.dna.color)
                 
         world.organisms.extend(new_organisms)
