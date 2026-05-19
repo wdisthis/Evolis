@@ -38,7 +38,9 @@ class Renderer:
             
         # Draw organisms (color based on energy, size based on dna)
         for org in self.world.organisms:
-            color = (max(0, 255 - int(org.energy)), min(255, int(org.energy)), 255)
+            r = max(0, min(255, 255 - int(org.energy)))
+            g = max(0, min(255, int(org.energy)))
+            color = (r, g, 255)
             pygame.draw.circle(self.screen, color, (int(org.x), int(org.y)), max(2, int(org.dna.size)))
         
         # Update display
