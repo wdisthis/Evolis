@@ -41,7 +41,15 @@ class Renderer:
             
         # Draw organisms (color based on lineage/dna, size based on dna)
         for org in self.world.organisms:
-            pygame.draw.circle(self.screen, org.dna.color, (int(org.x), int(org.y)), max(2, int(org.dna.size)))
+            x, y = int(org.x), int(org.y)
+            radius = max(2, int(org.dna.size))
+            if getattr(org, 'type', 'prey') == 'predator':
+                # Glowing effect for predator
+                pygame.draw.circle(self.screen, (255, 50, 50), (x, y), radius + 4, 1)
+                pygame.draw.circle(self.screen, (255, 100, 100), (x, y), radius + 2, 2)
+                pygame.draw.circle(self.screen, org.dna.color, (x, y), radius)
+            else:
+                pygame.draw.circle(self.screen, org.dna.color, (x, y), radius)
             
         # Draw Sidebar
         sidebar_rect = pygame.Rect(self.world.width, 0, self.sidebar_width, self.world.height)

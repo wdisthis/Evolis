@@ -1,5 +1,4 @@
 import random
-from evolis.entities.organism import Organism
 
 class ReproductionSystem:
     def update(self, world):
@@ -13,10 +12,12 @@ class ReproductionSystem:
                 # Create offspring nearby
                 child_dna = org.dna.copy()
                 # Spawn slightly offset to avoid getting stuck
-                child = Organism(org.x + random.uniform(-10, 10), 
+                child_class = type(org)
+                child = child_class(org.x + random.uniform(-10, 10), 
                                  org.y + random.uniform(-10, 10), 
                                  energy=60, dna=child_dna)
                 new_organisms.append(child)
-                world.log_event(f"Tick {world.tick}: Organism {org.id} reproduced! Offspring: {child.id}", org.dna.color)
+                type_name = child_class.__name__
+                world.log_event(f"Tick {world.tick}: {type_name} {org.id} reproduced! Offspring: {child.id}", org.dna.color)
                 
         world.organisms.extend(new_organisms)

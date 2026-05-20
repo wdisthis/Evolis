@@ -14,20 +14,28 @@ class MovementSystem:
                 org.vx = math.cos(angle) * org.dna.speed
                 org.vy = math.sin(angle) * org.dna.speed
             
-            # Move towards closest food if in sense radius
-            closest_food = None
+            # Find target based on type
+            closest_target = None
             min_dist = org.dna.sense_radius
             
-            for food in foods:
-                dist = math.hypot(food.x - org.x, food.y - org.y)
-                if dist < min_dist:
-                    min_dist = dist
-                    closest_food = food
-                    
-            if closest_food:
-                # Steer towards food
-                dx = closest_food.x - org.x
-                dy = closest_food.y - org.y
+            if org.type == 'prey':
+                for food in foods:
+                    dist = math.hypot(food.x - org.x, food.y - org.y)
+                    if dist < min_dist:
+                        min_dist = dist
+                        closest_target = food
+            elif org.type == 'predator':
+                for other in organisms:
+                    if other.is_dead or other.type != 'prey': continue
+                    dist = math.hypot(other.x - org.x, other.y - org.y)
+                    if dist < min_dist:
+                        min_dist = dist
+                        closest_target = other
+                        
+            if closest_target:
+                # Steer towards target
+                dx = closest_target.x - org.x
+                dy = closest_target.y - org.y
                 angle = math.atan2(dy, dx)
                 org.vx = math.cos(angle) * org.dna.speed
                 org.vy = math.sin(angle) * org.dna.speed

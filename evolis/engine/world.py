@@ -3,6 +3,8 @@ import os
 import random
 from evolis.entities.food import Food
 from evolis.entities.organism import Organism
+from evolis.entities.prey import Prey
+from evolis.entities.predator import Predator
 from evolis.systems.movement import MovementSystem
 from evolis.systems.collision import CollisionSystem
 from evolis.systems.reproduction import ReproductionSystem
@@ -39,10 +41,18 @@ class World:
             y = random.uniform(0, self.height)
             self.foods.append(Food(x, y))
             
-        for _ in range(10):
+        for _ in range(15):
             x = random.uniform(0, self.width)
             y = random.uniform(0, self.height)
-            org = Organism(x, y)
+            org = Prey(x, y)
+            org.vx = random.uniform(-1, 1)
+            org.vy = random.uniform(-1, 1)
+            self.organisms.append(org)
+
+        for _ in range(3):
+            x = random.uniform(0, self.width)
+            y = random.uniform(0, self.height)
+            org = Predator(x, y)
             org.vx = random.uniform(-1, 1)
             org.vy = random.uniform(-1, 1)
             self.organisms.append(org)
