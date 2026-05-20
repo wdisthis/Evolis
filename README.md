@@ -60,7 +60,7 @@ The simulation is built upon these fundamental rules:
 1. Ensure you have Python 3.8+ installed on your system.
 2. Clone this repository and navigate to the project folder:
    ```bash
-   git clone https://github.com/yourusername/evolis.git
+   git clone https://github.com/wdisthis/Evolis
    cd evolis
    ```
 3. Create and activate a virtual environment (optional but recommended):
