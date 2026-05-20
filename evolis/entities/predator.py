@@ -11,3 +11,8 @@ class Predator(Organism):
             self.dna.color = (random.randint(200, 255), random.randint(30, 80), random.randint(30, 80))
             # Slightly buff their sense radius so they can hunt effectively
             self.dna.sense_radius *= 1.5
+
+    def update(self):
+        super().update()
+        # Predators lose extra energy compared to prey
+        self.energy -= 0.002 # additional passive drain

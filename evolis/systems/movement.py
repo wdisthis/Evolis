@@ -19,11 +19,32 @@ class MovementSystem:
             min_dist = org.dna.sense_radius
             
             if org.type == 'prey':
-                for food in foods:
-                    dist = math.hypot(food.x - org.x, food.y - org.y)
-                    if dist < min_dist:
-                        min_dist = dist
-                        closest_target = food
+                # Check for nearby predators first
+                closest_predator = None
+                min_pred_dist = org.dna.sense_radius * 0.8 # Flee radius
+                
+                for other in organisms:
+                    if other.is_dead or other.type != 'predator': continue
+                    dist = math.hypot(other.x - org.x, other.y - org.y)
+                    if dist < min_pred_dist:
+                        min_pred_dist = dist
+                        closest_predator = other
+                
+                if closest_predator:
+                    # Steer away from predator
+                    dx = org.x - closest_predator.x
+                    dy = org.y - closest_predator.y
+                    angle = math.atan2(dy, dx)
+                    org.vx = math.cos(angle) * org.dna.speed * 1.2 # slightly faster when fleeing
+                    org.vy = math.sin(angle) * org.dna.speed * 1.2
+                    closest_target = None # We are fleeing, ignore food
+                else:
+                    # Look for food if no predator is nearby
+                    for food in foods:
+                        dist = math.hypot(food.x - org.x, food.y - org.y)
+                        if dist < min_dist:
+                            min_dist = dist
+                            closest_target = food
             elif org.type == 'predator':
                 for other in organisms:
                     if other.is_dead or other.type != 'prey': continue

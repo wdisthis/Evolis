@@ -49,7 +49,7 @@ class World:
             org.vy = random.uniform(-1, 1)
             self.organisms.append(org)
 
-        for _ in range(3):
+        for _ in range(2):
             x = random.uniform(0, self.width)
             y = random.uniform(0, self.height)
             org = Predator(x, y)
@@ -63,6 +63,10 @@ class World:
             self.event_log.pop(0)
 
     def update(self):
+        # Update individual organism states (age, passive energy drain)
+        for org in self.organisms:
+            org.update()
+            
         # Run systems
         self.movement_system.update(self.organisms, self.foods, self.width, self.height)
         self.collision_system.update(self.organisms, self.foods)

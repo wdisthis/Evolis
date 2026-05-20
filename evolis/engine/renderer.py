@@ -1,6 +1,7 @@
 import pygame
 import json
 import os
+import math
 
 class Renderer:
     def __init__(self, world):
@@ -44,10 +45,21 @@ class Renderer:
             x, y = int(org.x), int(org.y)
             radius = max(2, int(org.dna.size))
             if getattr(org, 'type', 'prey') == 'predator':
-                # Glowing effect for predator
-                pygame.draw.circle(self.screen, (255, 50, 50), (x, y), radius + 4, 1)
-                pygame.draw.circle(self.screen, (255, 100, 100), (x, y), radius + 2, 2)
                 pygame.draw.circle(self.screen, org.dna.color, (x, y), radius)
+                
+                # Pacman mouth pointing towards movement direction
+                if org.vx != 0 or org.vy != 0:
+                    angle = math.atan2(org.vy, org.vx)
+                else:
+                    angle = 0
+                    
+                # Animate mouth (open/close)
+                if (org.age % 16) < 8:
+                    mouth_angle = math.pi / 4
+                    p1 = (x, y)
+                    p2 = (x + (radius + 5) * math.cos(angle - mouth_angle), y + (radius + 5) * math.sin(angle - mouth_angle))
+                    p3 = (x + (radius + 5) * math.cos(angle + mouth_angle), y + (radius + 5) * math.sin(angle + mouth_angle))
+                    pygame.draw.polygon(self.screen, self.bg_color, [p1, p2, p3])
             else:
                 pygame.draw.circle(self.screen, org.dna.color, (x, y), radius)
             
